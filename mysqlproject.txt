@@ -1,0 +1,425 @@
+Project: "Bookstore Management System"
+
+Overview:Create a simple SQL database for a bookstore management system. The database will store information about books, authors, customers, and sales transactions.
+
+Tables:
+
+authors: To store information about authors.
+
+author_id (Primary Key)
+author_name
+birth_date
+nationality
+books: To store information about books.
+
+book_id (Primary Key)
+title
+author_id (Foreign Key referencing authors)
+price
+publication_date
+customers: To store information about customers.
+
+customer_id (Primary Key)
+name
+email
+phone_number
+sales: To store information about sales transactions.
+
+sale_id (Primary Key)
+book_id (Foreign Key referencing books)
+customer_id (Foreign Key referencing customers)
+sale_date
+quantity
+
+Tasks:
+Database Creation:
+
+Create a new SQL database named bookstore_db.
+Define the above tables with appropriate data types and constraints.
+
+Data Insertion:
+
+Insert at least 5 records into the authors table.
+Insert at least 10 records into the books table (link them to the authors you've added).
+Insert at least 5 records into the customers table.
+Insert at least 10 records into the sales table (link them to books and customers).
+
+Queries:
+
+Retrieve all the books written by a specific author.
+Find the total sales and revenue for a particular book.
+List all customers who purchased a specific book.
+Calculate the total revenue for each book.
+Find the top 5 bestselling books.
+Identify authors who have not sold any books.
+
+Additional Features (optional):
+
+Create a stored procedure to add a new book.
+Create a trigger to update the stock count (consider adding a stock column in the books table) whenever a sale is made.
+Implement a basic user interface using a programming language of your choice (e.g., Python with Flask) to interact with the database (add books, customers, and view sales).
+Steps to Complete the Project:
+Set up a local SQL database (e.g., using SQLite or MySQL or PostgreSQL).
+Create the database schema by defining the tables.
+Insert sample data into the tables.
+Write and execute SQL queries to retrieve and manipulate data.
+Implement additional features if desired.
+Document your project, explaining the database schema, queries, and any additional features.
+Push your project to GitHub.
+
+
+Example Repository Structure:-->
+
+
+bookstore_management_system/
+│
+├── sql_scripts/
+│   ├── schema.sql
+│   ├── insert_data.sql
+│   └── queries.sql
+│
+├── app/ (optional)
+│   ├── main.py
+│   ├── templates/
+│   └── static/
+│
+└── README.md
+
+
+In your README.md file, provide an overview of the project, instructions to set up the database, and explanations for the SQL queries and any additional features implemented.
+
+Remember to adhere to best practices, such as using meaningful commit messages and providing clear documentation.
+
+Below is the PostgreSQL code to create the tables for the "Bookstore Management System" project:
+
+Source Code :-
+
+-- Create the bookstore_db database
+CREATE DATABASE bookstore_db;
+
+-- Connect to the bookstore_db database
+\c bookstore_db
+
+-- Create the authors table
+CREATE TABLE authors (
+    author_id SERIAL PRIMARY KEY,
+    author_name VARCHAR(100) NOT NULL,
+    birth_date DATE,
+    nationality VARCHAR(50)
+);
+
+-- Create the books table
+CREATE TABLE books (
+    book_id SERIAL PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    author_id INT REFERENCES authors(author_id),
+    price DECIMAL(10, 2),
+    publication_date DATE
+);
+
+-- Create the customers table
+CREATE TABLE customers (
+    customer_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100),
+    phone_number VARCHAR(15)
+);
+
+-- Create the sales table
+CREATE TABLE sales (
+    sale_id SERIAL PRIMARY KEY,
+    book_id INT REFERENCES books(book_id),
+    customer_id INT REFERENCES customers(customer_id),
+    sale_date DATE,
+    quantity INT
+);
+
+-- Insert sample data into the authors table
+INSERT INTO authors (author_name, birth_date, nationality) VALUES
+('J.K. Rowling', '1965-07-31', 'British'),
+('George Orwell', '1903-06-25', 'British'),
+('Harper Lee', '1926-04-28', 'American'),
+('J.R.R. Tolkien', '1892-01-03', 'British'),
+('Jane Austen', '1775-12-16', 'British');
+
+-- Insert sample data into the books table
+INSERT INTO books (title, author_id, price, publication_date) VALUES
+('Harry Potter and the Philosopher''s Stone', 1, 20.00, '1997-06-26'),
+('1984', 2, 15.00, '1949-06-08'),
+('To Kill a Mockingbird', 3, 18.00, '1960-07-11'),
+('The Hobbit', 4, 22.00, '1937-09-21'),
+('Pride and Prejudice', 5, 16.00, '1813-01-28');
+
+-- Insert sample data into the customers table
+INSERT INTO customers (name, email, phone_number) VALUES
+('Alice', 'alice@email.com', '123-456-7890'),
+('Bob', 'bob@email.com', '987-654-3210'),
+('Charlie', 'charlie@email.com', '555-555-5555'),
+('David', 'david@email.com', '111-222-3333'),
+('Eve', 'eve@email.com', '999-888-7777');
+
+-- Insert sample data into the sales table
+INSERT INTO sales (book_id, customer_id, sale_date, quantity) VALUES
+(1, 1, '2023-01-01', 1),
+(1, 2, '2023-01-02', 1),
+(2, 3, '2023-01-03', 1),
+(3, 4, '2023-01-04', 2),
+(4, 5, '2023-01-05', 1),
+(5, 1, '2023-01-06', 1),
+(2, 2, '2023-01-07', 1),
+(3, 3, '2023-01-08', 1),
+(4, 4, '2023-01-09', 2),
+(5, 5, '2023-01-10', 1);
+
+This code sets up the database schema, creates the necessary tables, and inserts sample data. You can execute these SQL commands in a PostgreSQL environment to create your database and populate it with data.
+
+Remember to connect to your PostgreSQL instance and execute these commands in sequence to create the database and tables successfully.
+
+
+Once you have created the tables and inserted the sample data in your PostgreSQL database, you can test the database by running various SQL queries to retrieve, insert, update, or delete data. 
+
+Here are some basic tests you can perform to ensure everything is working correctly:
+
+Retrieve all books written by a specific author:
+
+SELECT b.title, a.author_name 
+FROM books b 
+JOIN authors a ON b.author_id = a.author_id 
+WHERE a.author_name = 'J.K. Rowling';
+
+
+Find the total sales and revenue for a particular book:--
+
+SELECT b.title, SUM(s.quantity) AS total_sales, (SUM(s.quantity) * b.price) AS total_revenue
+FROM books b
+JOIN sales s ON b.book_id = s.book_id
+WHERE b.title = 'Harry Potter and the Philosopher''s Stone'
+GROUP BY b.title, b.price;
+
+List all customers who purchased a specific book:
+
+SELECT c.name, b.title
+FROM customers c
+JOIN sales s ON c.customer_id = s.customer_id
+JOIN books b ON s.book_id = b.book_id
+WHERE b.title = 'To Kill a Mockingbird';
+
+Calculate the total revenue for each book:
+
+SELECT b.title, SUM(s.quantity) AS total_sales, (SUM(s.quantity) * b.price) AS total_revenue
+FROM books b
+JOIN sales s ON b.book_id = s.book_id
+GROUP BY b.title, b.price
+ORDER BY total_revenue DESC;
+
+Find the top 5 bestselling books:
+
+SELECT b.title, SUM(s.quantity) AS total_sales
+FROM books b
+JOIN sales s ON b.book_id = s.book_id
+GROUP BY b.title
+ORDER BY total_sales DESC
+LIMIT 5;
+
+Identify authors who have not sold any books:
+
+SELECT a.author_name
+FROM authors a
+LEFT JOIN books b ON a.author_id = b.author_id
+WHERE b.book_id IS NULL;
+
+You can execute these SQL queries in your PostgreSQL environment (using tools like pgAdmin, DBeaver, or the PostgreSQL command-line interface) to test the functionality of your database and ensure that the data is being retrieved and processed correctly.
+
+Additionally, you can perform CRUD operations (Create, Read, Update, Delete) to further test the database. For example, you can insert new records, update existing records, or delete records from the tables and observe the changes.
+
+CRUD operations (Create, Read, Update, Delete) allow you to interact with your database by adding, retrieving, modifying, or removing records. 
+
+Below are some example CRUD operations that you can perform to test the functionality of your PostgreSQL database for the "Bookstore Management System":
+
+Create (Insert Operations):
+
+Add a New Author:
+INSERT INTO authors (author_name, birth_date, nationality) 
+VALUES ('Agatha Christie', '1890-09-15', 'British');
+
+Add a New Book:
+INSERT INTO books (title, author_id, price, publication_date) 
+VALUES ('Murder on the Orient Express', (SELECT author_id FROM authors WHERE author_name = 'Agatha Christie'), 15.00, '1934-01-01');
+
+Add a New Customer:
+INSERT INTO customers (name, email, phone_number) 
+VALUES ('Frank', 'frank@email.com', '444-444-4444');
+
+Record a New Sale:
+INSERT INTO sales (book_id, customer_id, sale_date, quantity) 
+VALUES ((SELECT book_id FROM books WHERE title = 'Murder on the Orient Express'), (SELECT customer_id FROM customers WHERE name = 'Frank'), '2024-01-09', 1);
+Read (Select Operations):
+
+Retrieve All Authors:
+SELECT * FROM authors;
+
+Retrieve All Books:
+SELECT * FROM books;
+
+Retrieve All Customers:
+SELECT * FROM customers;
+
+Retrieve All Sales Transactions:
+SELECT * FROM sales;
+Update Operations:
+
+Update Author Information:
+UPDATE authors 
+SET nationality = 'British-American' 
+WHERE author_name = 'Agatha Christie';
+
+Update Book Price:
+UPDATE books 
+SET price = 18.00 
+WHERE title = 'Murder on the Orient Express';
+
+Update Customer Email:
+UPDATE customers 
+SET email = 'frank.new@email.com' 
+WHERE name = 'Frank';
+
+Update Sale Quantity:
+UPDATE sales 
+SET quantity = 2 
+WHERE sale_id = 11;
+Delete Operations:
+
+Delete an Author:
+DELETE FROM authors 
+WHERE author_name = 'Agatha Christie';
+
+Delete a Book:
+DELETE FROM books 
+WHERE title = 'Murder on the Orient Express';
+
+Delete a Customer:
+DELETE FROM customers 
+WHERE name = 'Frank';
+
+Delete a Sale Transaction:
+DELETE FROM sales 
+WHERE sale_id = 11;
+
+You can execute these SQL statements in your PostgreSQL environment to perform CRUD operations and verify that the data is being added, retrieved, updated, or deleted as expected.
+
+Creating a visual schema diagram would typically require specialized software or tools designed for database modeling. However, I can provide you with a textual representation of the schema diagram for the "Bookstore Management System" to give you an idea of how the tables and relationships are structured:
+
++------------+       +------------+       +------------+       +-----------+
+|   authors  |       |    books   |       |  customers |       |   sales   |
++------------+       +------------+       +------------+       +-----------+
+| author_id  |<----->|   book_id  |       | customer_id|<----->|  sale_id   |
+| author_name|       |    title   |       |    name    |       |  book_id   |
+| birth_date |       | author_id  |>------|   email    |       |customer_id |
+| nationality|       |    price   |       | phone_number|      | sale_date  |
++------------+       |publication_date|   +-----------+        |  quantity  |
+                     +------------+                            +-----------+
+
+The authors table has a one-to-many relationship with the books table via the author_id foreign key.
+The books table has a one-to-many relationship with the sales table via the book_id foreign key.
+The customers table has a one-to-many relationship with the sales table via the customer_id foreign key.
+
+To create an actual visual schema diagram, you can use database modeling tools like dbdiagram.io, Lucidchart, or tools integrated with your database management system (e.g., pgAdmin for PostgreSQL). These tools allow you to visually design, visualize, and generate database schema diagrams based on your tables and relationships.
+
+ER diagram :-
+
+Description for ER-Diagram :
+An entity-relationship diagram (ERD) is a data modeling technique that graphically illustrates an
+information system’s entities and the relationships between those entities. An ERD is a
+conceptual and representational model of data used to represent the entity frameworkinfrastructure. 
+
+The elements of an ERD are: 
+Entities 
+Relationships 
+Attributes 
+
+Steps involved in creating an ERD include: 
+1.Identifying and defining the entities 
+2.Determining all interactions between the entities 
+3.Analyzing the nature of interactions/determining the cardinality of the relationships 
+4.Creating the ERD
+
+Below is a textual representation of the Entity-Relationship (ER) diagram for the "Bookstore Management System":
+
++--------------+           +--------------+
+|    authors   |           |    books     |
++--------------+           +--------------+
+| author_id(PK)|-----------| book_id(PK)  |
+| author_name  |<------\   | title        |
+| birth_date   |        \--| author_id(FK)|
+| nationality  |           | price        |
++--------------+           | publication_date|
+                          +--------------+
+                                   |
+                                   |
+                                   |
+                                   |
+                                   |
+                          +--------------+
+                          |   sales      |
+                          +--------------+
+                          | sale_id(PK)  |
+                          | book_id(FK)  |
+                          | customer_id(FK)|
+                          | sale_date    |
+                          | quantity     |
+                          +--------------+
+                                   |
+                                   |
+                                   |
+                                   |
+                                   |
+                          +--------------+
+                          |  customers   |
+                          +--------------+
+                          | customer_id(PK)|
+                          | name         |
+                          | email        |
+                          | phone_number |
+                          +--------------+
+The authors table is connected to the books table through the author_id primary key in the authors table, which serves as a foreign key in the books table.
+The books table is linked to the sales table via the book_id primary key in the books table, which acts as a foreign key in the sales table.
+The customers table is associated with the sales table through the customer_id primary key in the customers table, which is referenced as a foreign key in the sales table.
+
+This textual representation provides a high-level overview of the relationships between the tables in the database schema. To create a visual ER diagram, you can use database design tools or software that supports ER diagramming, such as Lucidchart, dbdiagram.io, or ERDPlus. These tools allow you to visually represent and model the entities, attributes, and relationships within your database schema.
+
+Summary:
+
+Database Creation: We created a PostgreSQL database named bookstore_db to manage a bookstore's operations.
+
+Schema Design: We designed a database schema consisting of four tables: authors, books, customers, and sales, with appropriate relationships between them.
+
+Data Population: We populated the tables with sample data to simulate a bookstore environment, including information about authors, books, customers, and sales transactions.
+
+CRUD Operations: We demonstrated basic CRUD operations (Create, Read, Update, Delete) to interact with the database, allowing us to add, retrieve, modify, and remove records from the tables.
+
+Queries: We formulated and executed SQL queries to retrieve specific information from the database, such as books by a particular author, total sales and revenue for a book, customers who purchased a book, and top-selling books.
+
+How It Works:
+
+Authors Table: Stores information about authors, including their name, birth date, and nationality. The author_id serves as the primary key.
+
+Books Table: Contains details about books, such as the title, price, publication date, and the associated author (via the author_id foreign key). Each book is uniquely identified by the book_id primary key.
+
+Customers Table: Manages customer information, including their name, email, and phone number. The customer_id serves as the primary key.
+
+Sales Table: Records sales transactions, linking books and customers through foreign keys (book_id and customer_id). It stores the sale date and quantity for each transaction, with a unique sale_id as the primary key.
+
+Relationships:
+
+The authors table has a one-to-many relationship with the books table, as an author can write multiple books.
+The books table is linked to the sales table via a one-to-many relationship, indicating that a book can be sold multiple times.
+The customers table has a one-to-many relationship with the sales table, as a customer can make multiple purchases.
+
+Functionality:
+
+The system allows bookstore staff to manage information about authors, books, and customers.
+Sales transactions are recorded to track the sale of books to customers, facilitating inventory management and revenue tracking.
+Various queries can be executed to generate reports, analyze sales data, and gain insights into bookstore operations.
+Overall, the "Bookstore Management System" provides a structured and efficient way to manage bookstore operations, from maintaining a catalog of books and authors to recording sales transactions and analyzing sales data. It demonstrates fundamental database concepts and SQL operations in a practical context, serving as a foundation for more advanced database applications and systems.
+
+Thank you!
